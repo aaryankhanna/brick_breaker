@@ -1,8 +1,8 @@
 import { _decorator, Component, Node, Vec3, RigidBody2D, Vec2, Collider2D, Contact2DType, ERigidBody2DType } from 'cc';
 import { Trajectory } from './Trajectory';
-import { GameManager } from '../core/GameManager';
 import { GameConstants } from '../utilis/Constants';
 import { Brick } from './Brick';
+import { GamePlay } from '../core/GamePlay';
 
 const { ccclass, property } = _decorator;
 
@@ -66,7 +66,7 @@ export class Ball extends Component {
             const paddlePos = this._attachedPaddle.getPosition();
             this.node.setPosition(paddlePos.x, paddlePos.y + 40, 0);
         } else {
-            if (GameManager.instance.livesLeft > 0) {
+            if (GamePlay.instance.livesLeft > 0) {
                 this.checkBounds();
                 this.maintainSpeed();
             }
@@ -76,21 +76,21 @@ export class Ball extends Component {
 
     private checkBounds(): void {
         const pos = this.node.getPosition();
-        const gameManager = GameManager.instance;
+        const gamePlayInstance = GamePlay.instance;
 
         // Check if ball fell below the bottom boundary
-        if (pos.y < gameManager.gameAreaBottom - 100) {
-            GameManager.instance.onBallLost();
+        if (pos.y < gamePlayInstance.gameAreaBottom - 100) {
+            GamePlay.instance.onBallLost();
             return;
         }
 
         // Bounce off left/right walls using actual game area bounds
-        if (pos.x <= gameManager.gameAreaLeft || pos.x >= gameManager.gameAreaRight) {
+        if (pos.x <= gamePlayInstance.gameAreaLeft || pos.x >= gamePlayInstance.gameAreaRight) {
             this._rigidBody.linearVelocity = new Vec2(-this._rigidBody.linearVelocity.x, this._rigidBody.linearVelocity.y);
         }
 
         // Bounce off top using actual game area bounds
-        if (pos.y >= gameManager.gameAreaTop) {
+        if (pos.y >= gamePlayInstance.gameAreaTop) {
             this._rigidBody.linearVelocity = new Vec2(this._rigidBody.linearVelocity.x, -Math.abs(this._rigidBody.linearVelocity.y));
         }
     }

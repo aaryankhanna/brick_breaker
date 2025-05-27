@@ -36,6 +36,7 @@ export class GameConstants {
     // UI
     static readonly UI_BUTTON_WIDTH = 200;
     static readonly UI_BUTTON_HEIGHT = 60;
+    static readonly BONUS = 500;
 }
 
 export enum GameState {

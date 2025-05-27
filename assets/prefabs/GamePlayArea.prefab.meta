@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "35a98f4b-5f5a-4c98-afac-6bf43601e9ea",
+  "uuid": "8cf87ca0-3cda-4d31-9222-0c14ae037f99",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "Paddle"
+    "syncNodeName": "GamePlayArea"
   }
 }

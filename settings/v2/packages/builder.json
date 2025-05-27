@@ -1,3 +1,14 @@
 {
-  "__version__": "1.3.9"
+  "__version__": "1.3.9",
+  "splash-setting": {
+    "logo": {
+      "type": "custom",
+      "image": "project://settings/splashImage.png"
+    },
+    "totalTime": 3000,
+    "background": {
+      "type": "color"
+    },
+    "displayRatio": 3.5
+  }
 }

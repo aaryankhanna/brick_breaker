@@ -1,6 +1,6 @@
-import { _decorator, Component, Node, Vec3 } from 'cc';
+import { _decorator, Component, Node, UITransform, Vec3 } from 'cc';
 import { GameConstants } from '../utilis/Constants';
-import { GameManager } from '../core/GameManager';
+import { GamePlay } from '../core/GamePlay';
 
 const { ccclass } = _decorator;
 
@@ -10,30 +10,37 @@ export class Paddle extends Component {
 
     protected start(): void {
         this._targetPosition = this.node.getPosition().clone();
+
     }
+
 
     public move(direction: number): void {
+        const uiTransform = this.node.getComponent(UITransform)!;
+        const paddleHalfWidth = uiTransform.width / 2;
+
+        const gamePlayInstance = GamePlay.instance;
         const currentPos = this.node.getPosition();
         const newX = currentPos.x + direction * GameConstants.PADDLE_SPEED;
-        const gameManager = GameManager.instance;
 
-        // Clamp to actual game area bounds
-        const clampedX = Math.max(
-            gameManager.gameAreaLeft + GameConstants.PADDLE_WIDTH / 2,
-            Math.min(gameManager.gameAreaRight - GameConstants.PADDLE_WIDTH / 2, newX)
-        );
+        // Clamp paddle center to valid bounds (edges should stay inside game area)
+        const leftBound = gamePlayInstance.gameAreaLeft + paddleHalfWidth;
+        const rightBound = gamePlayInstance.gameAreaRight - paddleHalfWidth;
+        const clampedX = Math.max(leftBound, Math.min(newX, rightBound));
 
-        this._targetPosition.set(clampedX, currentPos.y, currentPos.z);
-        this.node.setPosition(this._targetPosition);
+        this.node.setPosition(clampedX, currentPos.y, currentPos.z);
     }
+
+
+
 
     public setPosition(x: number): void {
         const currentPos = this.node.getPosition();
-        const gameManager = GameManager.instance;
+        const gamePlayInstance = GamePlay.instance;
+        const width = this.node.getComponent(UITransform)!.width;
 
         const clampedX = Math.max(
-            gameManager.gameAreaLeft + GameConstants.PADDLE_WIDTH / 2,
-            Math.min(gameManager.gameAreaRight - GameConstants.PADDLE_WIDTH / 2, x)
+            gamePlayInstance.gameAreaLeft + width / 2,
+            Math.min(gamePlayInstance.gameAreaRight - GameConstants.PADDLE_WIDTH / 2, x)
         );
         this.node.setPosition(clampedX, currentPos.y, currentPos.z);
     }

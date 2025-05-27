@@ -1,6 +1,6 @@
 import { _decorator, Component, Node, Sprite, Color, tween, Vec3, Collider2D, Contact2DType, RigidBody2D, ERigidBody2DType, SpriteFrame } from 'cc';
-import { GameManager } from '../core/GameManager';
 import { BrickType } from '../utilis/Constants';
+import { GamePlay } from '../core/GamePlay';
 
 
 const { ccclass, property } = _decorator;
@@ -95,7 +95,7 @@ export class Brick extends Component {
         tween(this.node)
             .to(0.2, { scale: new Vec3(0, 0, 1) })
             .call(() => {
-                GameManager.instance.onBrickDestroyed(this.node);
+                GamePlay.instance.onBrickDestroyed(this.node);
                 this.node.destroy();
             })
             .start();

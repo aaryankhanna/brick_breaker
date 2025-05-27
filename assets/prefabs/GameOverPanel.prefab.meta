@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "35a98f4b-5f5a-4c98-afac-6bf43601e9ea",
+  "uuid": "466a4201-6412-4981-8cf1-c033c4bb5499",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "Paddle"
+    "syncNodeName": "GameOverPanel"
   }
 }
