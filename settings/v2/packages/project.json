@@ -1,0 +1,44 @@
+{
+  "__version__": "1.0.6",
+  "general": {
+    "designResolution": {
+      "width": 720,
+      "height": 1280,
+      "fitHeight": true,
+      "fitWidth": false
+    }
+  },
+  "physics": {
+    "gravity": {
+      "y": 0
+    },
+    "collisionMatrix": {
+      "0": 1,
+      "1": 28,
+      "2": 2,
+      "3": 2,
+      "4": 2
+    },
+    "allowSleep": false,
+    "fixedTimeStep": 0.016,
+    "maxSubSteps": 8,
+    "collisionGroups": [
+      {
+        "index": 1,
+        "name": "Ball"
+      },
+      {
+        "index": 2,
+        "name": "Paddle"
+      },
+      {
+        "index": 3,
+        "name": "Brick"
+      },
+      {
+        "index": 4,
+        "name": "Wall"
+      }
+    ]
+  }
+}
