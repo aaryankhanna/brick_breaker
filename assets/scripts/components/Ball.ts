@@ -11,6 +11,7 @@ export class Ball extends Component {
     private _isAttached = true;
     private _attachedPaddle: Node = null!;
     private _velocity: Vec2 = new Vec2();
+    private _hasLaunched = false;
 
     protected onLoad(): void {
 
@@ -33,14 +34,25 @@ export class Ball extends Component {
         this._rigidBody = this.node.getComponent(RigidBody2D)!;
         this._isAttached = true;
         this._attachedPaddle = paddle;
+        this._hasLaunched = false;
+
+        this._rigidBody.type = ERigidBody2DType.Kinematic;
         this._rigidBody.linearVelocity = Vec2.ZERO;
+
+        if (this._attachedPaddle) {
+            const paddlePos = this._attachedPaddle.getPosition();
+            this.node.setPosition(paddlePos.x, paddlePos.y + 40, 0);
+        }
     }
 
     public launch(): void {
         if (!this._isAttached) return;
 
         this._isAttached = false;
+        this._hasLaunched = true;
         this._attachedPaddle = null!;
+
+        this._rigidBody.type = ERigidBody2DType.Dynamic;
 
         const angle = Math.random() * 60 - 30;
         const radians = angle * Math.PI / 180;
@@ -56,6 +68,7 @@ export class Ball extends Component {
         if (this._isAttached && this._attachedPaddle) {
             const paddlePos = this._attachedPaddle.getPosition();
             this.node.setPosition(paddlePos.x, paddlePos.y + 40, 0);
+            this._rigidBody.linearVelocity = Vec2.ZERO;
         } else {
             if (GamePlay.instance.livesLeft > 0) {
                 this.checkBounds();
@@ -92,8 +105,8 @@ export class Ball extends Component {
     }
 
     private onCollisionEnter(selfCollider: Collider2D, otherCollider: Collider2D): void {
+        if (!this._hasLaunched) return;
         const other = otherCollider.node;
-
         if (other.name.includes('Paddle')) {
             this.bounceOffPaddle(other);
         } else if (other.name.includes('Brick')) {

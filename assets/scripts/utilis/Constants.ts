@@ -5,8 +5,8 @@ export class GameConstants {
     static readonly PADDLE_SPEED = 8;
 
     // Ball
-    static readonly BALL_SPEED = 10;
-    static readonly BALL_START_Y = -480;
+    static readonly BALL_SPEED = 17;
+    static readonly BALL_START_Y = -490;
 
     // Bricks
     static readonly BRICK_WIDTH = 60;

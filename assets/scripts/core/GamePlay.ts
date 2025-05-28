@@ -61,7 +61,7 @@ export class GamePlay extends Component {
         this._areaTop = height / 2;
         this._areaBottom = -height / 2;
 
-        const margin = 10;
+        const margin = 5;
         this._areaLeft += margin;
         this._areaRight -= margin;
         this._areaTop -= margin;
