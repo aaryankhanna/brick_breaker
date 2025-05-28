@@ -70,14 +70,12 @@ export class Ball extends Component {
                 this.checkBounds();
                 this.maintainSpeed();
             }
-
         }
     }
 
     private checkBounds(): void {
         const pos = this.node.getPosition();
         const gamePlayInstance = GamePlay.instance;
-
         // Check if ball fell below the bottom boundary
         if (pos.y < gamePlayInstance.gameAreaBottom - 100) {
             GamePlay.instance.onBallLost();
@@ -88,7 +86,7 @@ export class Ball extends Component {
         if (pos.x <= gamePlayInstance.gameAreaLeft || pos.x >= gamePlayInstance.gameAreaRight) {
             this._rigidBody.linearVelocity = new Vec2(-this._rigidBody.linearVelocity.x, this._rigidBody.linearVelocity.y);
         }
-
+        //maga ma sa
         // Bounce off top using actual game area bounds
         if (pos.y >= gamePlayInstance.gameAreaTop) {
             this._rigidBody.linearVelocity = new Vec2(this._rigidBody.linearVelocity.x, -Math.abs(this._rigidBody.linearVelocity.y));
