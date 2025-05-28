@@ -1,5 +1,5 @@
 import { _decorator, Component, Node, Vec3, RigidBody2D, Vec2, Collider2D, Contact2DType, ERigidBody2DType } from 'cc';
-import { Trajectory } from './Trajectory';
+// import { Trajectory } from './Trajectory';
 import { GameConstants } from '../utilis/Constants';
 import { Brick } from './Brick';
 import { GamePlay } from '../core/GamePlay';
@@ -8,8 +8,8 @@ const { ccclass, property } = _decorator;
 
 @ccclass('Ball')
 export class Ball extends Component {
-    @property(Trajectory)
-    trajectory: Trajectory = null!;
+    // @property(Trajectory)
+    // trajectory: Trajectory = null!;
 
     private _rigidBody: RigidBody2D = null!;
     private _isAttached = true;
@@ -17,30 +17,34 @@ export class Ball extends Component {
     private _velocity: Vec2 = new Vec2();
 
     protected onLoad(): void {
-        this._rigidBody = this.getComponent(RigidBody2D)!;
+
+    }
+    protected onEnable(): void {
         this.setupCollision();
     }
-
     protected start(): void {
         this._velocity.set(0, GameConstants.BALL_SPEED);
     }
 
     private setupCollision(): void {
-        const collider = this.getComponent(Collider2D)!;
+        const collider = this.node.getComponent(Collider2D)!;
         if (collider) {
             collider.on(Contact2DType.BEGIN_CONTACT, this.onCollisionEnter, this);
         }
     }
 
     public attachToPaddle(paddle: Node): void {
+        this._rigidBody = this.node.getComponent(RigidBody2D)!;
+
         this._isAttached = true;
         this._attachedPaddle = paddle;
+
         this._rigidBody.linearVelocity = Vec2.ZERO;
 
-        if (this.trajectory) {
-            this.trajectory.show();
-            this.trajectory.calculateTrajectory(this.node.getPosition(), new Vec2(0, 1));
-        }
+        // if (this.trajectory) {
+        //     this.trajectory.show();
+        //     this.trajectory.calculateTrajectory(this.node.getPosition(), new Vec2(0, 1));
+        // }
     }
 
     public launch(): void {
@@ -49,9 +53,9 @@ export class Ball extends Component {
         this._isAttached = false;
         this._attachedPaddle = null!;
 
-        if (this.trajectory) this.trajectory.hide();
+        // if (this.trajectory) this.trajectory.hide();
 
-        const angle = Math.random() * 60 - 30; // -30° to 30°
+        const angle = Math.random() * 60 - 30;
         const radians = angle * Math.PI / 180;
         const launchVelocity = new Vec2(
             Math.sin(radians) * GameConstants.BALL_SPEED,
@@ -76,18 +80,14 @@ export class Ball extends Component {
     private checkBounds(): void {
         const pos = this.node.getPosition();
         const gamePlayInstance = GamePlay.instance;
-        // Check if ball fell below the bottom boundary
         if (pos.y < gamePlayInstance.gameAreaBottom - 100) {
             GamePlay.instance.onBallLost();
             return;
         }
 
-        // Bounce off left/right walls using actual game area bounds
         if (pos.x <= gamePlayInstance.gameAreaLeft || pos.x >= gamePlayInstance.gameAreaRight) {
             this._rigidBody.linearVelocity = new Vec2(-this._rigidBody.linearVelocity.x, this._rigidBody.linearVelocity.y);
         }
-        //maga ma sa
-        // Bounce off top using actual game area bounds
         if (pos.y >= gamePlayInstance.gameAreaTop) {
             this._rigidBody.linearVelocity = new Vec2(this._rigidBody.linearVelocity.x, -Math.abs(this._rigidBody.linearVelocity.y));
         }

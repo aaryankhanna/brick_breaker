@@ -10,35 +10,6 @@ export class CollisionSystem extends Component {
 
     public initialize(gameManager: GamePlay): void {
         this._gameManager = gameManager;
-        this.setupCollisionCallbacks();
     }
 
-    private setupCollisionCallbacks(): void {
-        // This system can be used for global collision handling
-        // Individual components handle their own collisions directly
-    }
-
-    public handleBallBrickCollision(ball: Node, brick: Node): void {
-        // Handle specific collision logic if needed
-        const brickComponent = brick.getComponent('Brick');
-        if (brickComponent) {
-            (brickComponent as any).onHit();
-        }
-    }
-
-    public handleBallPaddleCollision(ball: Node, paddle: Node): void {
-        // Handle specific collision logic if needed
-        const ballComponent = ball.getComponent('Ball');
-        if (ballComponent) {
-            (ballComponent as any).bounceOffPaddle(paddle);
-        }
-    }
-
-    public handleBallWallCollision(ball: Node, wall: string): void {
-        // Handle wall collisions
-        const ballComponent = ball.getComponent('Ball');
-        if (ballComponent) {
-            (ballComponent as any).handleWallCollision(wall);
-        }
-    }
 }

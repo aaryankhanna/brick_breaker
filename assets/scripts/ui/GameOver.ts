@@ -12,10 +12,11 @@ export class GameOver extends Component {
     totalScore: Label = null
     @property(Label)
     bonus: Label = null!
+
     start() {
         this.init();
-
     }
+
     init() {
         if (this.node.name == "VictoryPanel") {
             this.bonus.string = `${GameConstants.BONUS}`;
@@ -26,15 +27,9 @@ export class GameOver extends Component {
             this.totalScore.string = "SCORE : " + `${GamePlay.instance.score}`;
         }
     }
+
     restart() {
-        GamePlay.instance.restartGame();
+        GameManager.instance.restartGame();
     }
-    async home() {
-        await GameManager.instance.destroyNodes();
-        await GameManager.instance.showGameStartUI();
-    }
-    update(deltaTime: number) {
 
-    }
 }
-

@@ -1,4 +1,4 @@
-import { _decorator, Component, instantiate, Node, Prefab } from 'cc';
+import { _decorator, Component, instantiate, Node, Prefab, director } from 'cc';
 import { GameUI } from '../ui/GameUI';
 import { TopHUD } from '../ui/TopHUD';
 const { ccclass, property } = _decorator;
@@ -23,10 +23,10 @@ export class GameManager extends Component {
     public topHUDref: TopHUD = null;
     public gameUIref: GameUI = null;
 
+    public stateLabel: Node = null;
     onLoad() {
         if (GameManager.instance) {
-            console.warn('GameManager instance already exists!');
-            this.destroy();  // Prevent duplicates
+            this.destroy();
             return;
         }
 
@@ -37,15 +37,12 @@ export class GameManager extends Component {
         this.showGameStartUI();
     }
 
-    update(deltaTime: number) {
-        // Any per-frame logic
-    }
-
-    // You can also add reusable methods here
     public showGameStartUI() {
         const startNode = instantiate(this.gameStartPrefab);
+        startNode.active = true
         this.gameStartNode.addChild(startNode);
     }
+
     public showGamePlay() {
         const top_HUD = instantiate(this.topHUD_prefab);
         this.uiNode.addChild(top_HUD);
@@ -53,12 +50,18 @@ export class GameManager extends Component {
         this.topHUDref = top_HUD.getComponent(TopHUD)
         const gamePlay = instantiate(this.gamePlayAreaPrefab);
         this.gamePlayAreaNode.addChild(gamePlay);
-        console.log("in game play");
-
     }
+
+    public restartGame() {
+        director.resume();
+        this.destroyNodes();
+        this.showGamePlay();
+    }
+
     destroyNodes() {
-        this.gameStartNode.destroyAllChildren();
         this.uiNode.destroyAllChildren();
         this.gamePlayAreaNode.destroyAllChildren();
+        this.topHUDref = null;
+        this.gameUIref = null;
     }
 }

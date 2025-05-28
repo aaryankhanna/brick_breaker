@@ -8,7 +8,6 @@ import { GameUI } from '../ui/GameUI';
 import { GameState, GameConstants, BrickType } from '../utilis/Constants';
 import { GameManager } from './GameManager';
 
-
 const { ccclass, property } = _decorator;
 
 @ccclass('GamePlay')
@@ -36,12 +35,11 @@ export class GamePlay extends Component {
     private _inputSystem: InputSystem = null!;
     private _collisionSystem: CollisionSystem = null!;
     private _score: number = 0;
-    private _lives: number = 3;
+    private _lives: number = 1;
     private _areaLeft = 0;
     private _areaRight = 0;
     private _areaTop = 0;
     private _areaBottom = 0;
-
 
     public static get instance(): GamePlay {
         return GamePlay._instance;
@@ -52,6 +50,7 @@ export class GamePlay extends Component {
         this.updateGameAreaBounds();
         this.initializeSystems();
     }
+
     private updateGameAreaBounds(): void {
         const uiTransform = this.gamePlayArea.getComponent(UITransform)!;
         const width = uiTransform.width;
@@ -67,10 +66,7 @@ export class GamePlay extends Component {
         this._areaRight -= margin;
         this._areaTop -= margin;
         this._areaBottom += margin;
-
     }
-
-
 
     protected start(): void {
         this.initializeGame();
@@ -87,6 +83,15 @@ export class GamePlay extends Component {
     }
 
     private initializeGame(): void {
+        this._score = 0;
+        this._lives = GameConstants.LIVES;
+
+        // Update UI
+        if (GameManager.instance.topHUDref) {
+            GameManager.instance.topHUDref.updateScore(this._score);
+            GameManager.instance.topHUDref.updateLives(this._lives);
+        }
+
         this.createPaddle();
         this.createBricks();
         this.setState(GameState.PLAYING);
@@ -154,7 +159,6 @@ export class GamePlay extends Component {
                 this.gamePlayArea.addChild(brick);
             }
         }
-
     }
 
     private shuffleArray<T>(array: T[]): void {
@@ -164,15 +168,15 @@ export class GamePlay extends Component {
         }
     }
 
-
-
     private spawnBall(): void {
+
         if (this._ball) {
             this._ball.destroy();
         }
 
         this._ball = instantiate(this.ballPrefab);
         this._ball.setPosition(0, GameConstants.BALL_START_Y, 0);
+
         this.gamePlayArea.addChild(this._ball);
 
         const ballComponent = this._ball.getComponent(Ball)!;
@@ -191,7 +195,9 @@ export class GamePlay extends Component {
         if (index > -1) {
             this._bricks.splice(index, 1);
             this._score += 100;
-            GameManager.instance.topHUDref.updateScore(this._score);
+            if (GameManager.instance.topHUDref) {
+                GameManager.instance.topHUDref.updateScore(this._score);
+            }
 
             if (this._bricks.length === 0) {
                 this.setState(GameState.VICTORY);
@@ -201,7 +207,9 @@ export class GamePlay extends Component {
 
     public onBallLost(): void {
         this._lives--;
-        GameManager.instance.topHUDref.updateLives(this._lives)
+        if (GameManager.instance.topHUDref) {
+            GameManager.instance.topHUDref.updateLives(this._lives);
+        }
 
         if (this._lives <= 0) {
             this.setState(GameState.GAME_OVER);
@@ -217,34 +225,12 @@ export class GamePlay extends Component {
         }
     }
 
-    public restartGame(): void {
-        director.resume()
-        this.clearGame();
-        this._score = 0;
-        this._lives = 3;
-        GameManager.instance.topHUDref.updateScore(this._score)
-        GameManager.instance.topHUDref.updateLives(this._lives)
-        this.initializeGame();
-    }
-
-    private clearGame(): void {
-        if (this._ball) {
-            this._ball.destroy();
-            this._ball = null!;
-        }
-
-        if (this._paddle) {
-            this._paddle.destroy();
-            this._paddle = null!;
-        }
-
-        this._bricks.forEach(brick => brick.destroy());
-        this._bricks = [];
-    }
 
     private setState(newState: GameState): void {
         this._currentState = newState;
-        GameManager.instance.gameUIref.onStateChanged(newState);
+        if (GameManager.instance.gameUIref) {
+            GameManager.instance.gameUIref.onStateChanged(newState);
+        }
     }
 
     public get currentState(): GameState {
@@ -262,6 +248,7 @@ export class GamePlay extends Component {
     public get bricks(): Node[] {
         return this._bricks;
     }
+
     public get gameAreaLeft(): number {
         return this._areaLeft;
     }
@@ -277,9 +264,11 @@ export class GamePlay extends Component {
     public get gameAreaBottom(): number {
         return this._areaBottom;
     }
+
     public get livesLeft(): number {
         return this._lives;
     }
+
     public get score(): number {
         return this._score;
     }

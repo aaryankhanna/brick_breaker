@@ -1,5 +1,5 @@
 import { _decorator, Component, Node, Sprite, Color, tween, Vec3, Collider2D, Contact2DType, RigidBody2D, ERigidBody2DType, SpriteFrame } from 'cc';
-import { BrickType } from '../utilis/Constants';
+import { BrickHealth, BrickType } from '../utilis/Constants';
 import { GamePlay } from '../core/GamePlay';
 
 
@@ -37,7 +37,16 @@ export class Brick extends Component {
 
     public setBrickType(type: BrickType): void {
         this._brickType = type;
-        this._health = type;
+        if (type == BrickType.NORMAL) {
+            this._health = BrickHealth.NORMAL;
+        }
+        else if (type == BrickType.STRONG) {
+            this._health = BrickHealth.STRONG;
+
+        }
+        else {
+            this._health = BrickHealth.UNBREAKABLE;
+        }
         this.updateVisual();
     }
 
@@ -62,12 +71,13 @@ export class Brick extends Component {
         if (this._isDestroyed || this._brickType === BrickType.UNBREAKABLE) {
             return;
         }
+        console.log("health : ", this.health);
 
         this._health--;
         if (this._health <= 0) {
             this.destroyBrick();
         } else {
-            this.showHitEffect();
+            // this.showHitEffect();
             this.updateVisual();
         }
     }
