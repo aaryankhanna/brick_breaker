@@ -1,5 +1,4 @@
 import { _decorator, Component, Node, Vec3, RigidBody2D, Vec2, Collider2D, Contact2DType, ERigidBody2DType } from 'cc';
-// import { Trajectory } from './Trajectory';
 import { GameConstants } from '../utilis/Constants';
 import { Brick } from './Brick';
 import { GamePlay } from '../core/GamePlay';
@@ -8,9 +7,6 @@ const { ccclass, property } = _decorator;
 
 @ccclass('Ball')
 export class Ball extends Component {
-    // @property(Trajectory)
-    // trajectory: Trajectory = null!;
-
     private _rigidBody: RigidBody2D = null!;
     private _isAttached = true;
     private _attachedPaddle: Node = null!;
@@ -35,16 +31,9 @@ export class Ball extends Component {
 
     public attachToPaddle(paddle: Node): void {
         this._rigidBody = this.node.getComponent(RigidBody2D)!;
-
         this._isAttached = true;
         this._attachedPaddle = paddle;
-
         this._rigidBody.linearVelocity = Vec2.ZERO;
-
-        // if (this.trajectory) {
-        //     this.trajectory.show();
-        //     this.trajectory.calculateTrajectory(this.node.getPosition(), new Vec2(0, 1));
-        // }
     }
 
     public launch(): void {
@@ -52,8 +41,6 @@ export class Ball extends Component {
 
         this._isAttached = false;
         this._attachedPaddle = null!;
-
-        // if (this.trajectory) this.trajectory.hide();
 
         const angle = Math.random() * 60 - 30;
         const radians = angle * Math.PI / 180;
